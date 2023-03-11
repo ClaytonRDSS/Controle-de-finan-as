@@ -7,7 +7,7 @@ module.exports = (req, res, next)  =>{
         const errors = parseErrors(bundle.errors)
         res.status(500).json({errors})
     } else {
-        next(errors)
+        next()
     }
 }
 
