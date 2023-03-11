@@ -24,6 +24,16 @@ BillingCycle.route('get', (req, res, next) => {
 
 })
 
+BillingCycle.route('count', (req, res, next) => {
+    BillingCycle.count((error, value) => {
+        if (error) {
+            res.status(500).json({ errors: [error] })
+        } else {
+            res.json({ value })
+        }
+    })
+})
+
 BillingCycle.route('summary', (req, res, next) => {
     BillingCycle.aggregate([{ 
         // soma dos valores de credito e debitos na variavel credit
