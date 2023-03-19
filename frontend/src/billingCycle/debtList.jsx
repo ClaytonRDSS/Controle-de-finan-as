@@ -1,11 +1,27 @@
 import React, {Component} from "react";
 
-import { Field } from "redux-form";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+import { Field, arrayInsert, arrayRemove } from "redux-form";
 import Input from "../common/form/input";
 
 import Grid from '../common/layout/grid'
 
+import If from "../common/operator/if"
+
 class DebtList extends Component {
+
+    add(index, item = {}) {
+        if(!this.props.readOnly) {
+            this.props.arrayInsert('billingCycleForm', 'debts', index, item)
+        }
+    }
+    remove(index) {
+        if(!this.props.readOnly && this.props.list.length > 1) {
+            this.props.arrayRemove('billingCycleForm', 'debts', index)
+        }
+    }
      renderRows() {
         const list = this.props.list || [];
         return list.map((item, index) => (
@@ -14,7 +30,26 @@ class DebtList extends Component {
                     placeholder='Imforme o Nome!' readOnly={this.props.readOnly}/></td>
                 <td><Field name={`debts[${index}].value`} component={Input}
                     placeholder='Imforme o Nome!' readOnly={this.props.readOnly}/></td>
-                <td></td>
+                <If test={this.props.showStatus}>
+                <td><Field name={`debts[${index}].status`} component={Input}
+                    placeholder='Imforme o Status!' readOnly={this.props.readOnly}/></td>
+                </If>
+                <td>
+                <button type='button' className="btn btn-success"
+                        onClick={() => this.add(index + 1)}>
+                        <i className="fa fa-plus"></i>
+                    </button>
+
+                    <button type='button' className="btn btn-warning"
+                        onClick={() => this.add(index + 1, item)}>
+                        <i className="fa fa-clone"></i>
+                    </button>
+
+                    <button type='button' className="btn btn-danger"
+                        onClick={() => this.remove(index)}>
+                        <i className="fa fa-trash-o"></i>
+                    </button>
+                </td>
             </tr>
         ))
     }
@@ -28,7 +63,10 @@ class DebtList extends Component {
                             <tr>
                                 <th>Nome</th>
                                 <th>Valor</th>
-                                <th>Ações</th>
+                                <If test={this.props.showStatus}>
+                                    <th>Status</th>
+                                </If>
+                                <th className="table-actions">Ações</th>
                             </tr>
                         </thead>
 
@@ -41,4 +79,6 @@ class DebtList extends Component {
         )
     }
 }
-export default DebtList;
+
+const mapDispatchToProps = dispatch => bindActionCreators({arrayInsert, arrayRemove}, dispatch)
+export default connect(null, mapDispatchToProps) (DebtList);
