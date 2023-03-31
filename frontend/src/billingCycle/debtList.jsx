@@ -25,7 +25,7 @@ class DebtList extends Component {
      renderRows() {
         const list = this.props.list || [];
         return list.map((item, index) => (
-            <tr>
+            <tr key={index}>
                 <td><Field name={`debts[${index}].name`} component={Input}
                     placeholder='Imforme o Nome!' readOnly={this.props.readOnly}/></td>
                 <td><Field name={`debts[${index}].value`} component={Input}
